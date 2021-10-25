@@ -1,46 +1,37 @@
 package br.com.erudio.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.erudio.exception.UnsuportedMathOperationException;
+import br.com.erudio.service.MathOperationService;
 
 @RestController
 public class MathController {
 	
+	@Autowired
+	private MathOperationService mathOperation;
+	
 	@RequestMapping(value="/sum/{numberOne}/{numberTwo}", method = RequestMethod.GET)
-	public Double sum(@PathVariable("numberOne") String numberOne,
-			@PathVariable("numberOne") String numberTwo) throws Exception{
-		
-		if (!isNumeric(numberOne) || !isNumeric(numberTwo)) {
-			throw new UnsuportedMathOperationException("Please set a numeric value!");
-		}
-		
-		Double sum = convertToDouble(numberOne) + convertToDouble(numberTwo);
-		
-		return sum;
+	public Double sum(@PathVariable("numberTwo") String numberOne, @PathVariable("numberOne") String numberTwo) throws Exception{
+		return mathOperation.sum(numberOne, numberTwo);
 	}
 	
-	private Double convertToDouble(String strNumber) {
-		if(strNumber == null) {
-			return 0D;
-		}
-		
-		String number = strNumber.replaceAll(",", ".");
-		if(isNumeric(number)) {
-			return Double.parseDouble(number);
-		}
-		
-		return 0D;
+	@RequestMapping(value="/multi/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double multiple(@PathVariable("numberOne") String numberOne,	@PathVariable("numberTwo") String numberTwo) throws Exception{
+		return mathOperation.multiplication(numberOne, numberTwo);
 	}
-
-	private boolean isNumeric(String strNumber) {
-		if(strNumber == null) {
-			return false;
-		}
-		String number = strNumber.replaceAll(",", ".");
-		return number.matches("[-+]?[0-9]*\\.?[0-9]+");
+	
+	@RequestMapping(value="/sub/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double sub(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo) throws Exception{
+		return mathOperation.subtration(numberOne, numberTwo);
+	}
+	
+	@RequestMapping(value="/div/{numberOne}/{numberTwo}", method = RequestMethod.GET)
+	public Double div(@PathVariable("numberOne") String numberOne, @PathVariable("numberTwo") String numberTwo) throws Exception{
+		return mathOperation.devide(numberOne, numberTwo);
 	}
 }
